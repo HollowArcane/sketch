@@ -1,0 +1,136 @@
+package bin.util.geometry;
+
+import bin.util.Maths;
+
+public class Vector2
+{
+    public double x;
+    public double y;
+
+    public Vector2(double x, double y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public static Vector2 polar(double angle, double radius)
+    { return new Vector2(radius * Math.cos(angle), radius * Math.sin(angle)); }
+
+    public static Vector2 zero()
+    { return new Vector2(0, 0); }
+
+    public static Vector2 random()
+    { return random(1); }
+
+    public static Vector2 random(double scaleX)
+    { return random(scaleX, scaleX); }
+
+    public static Vector2 random(double scaleX, double scaleY)
+    {
+        Vector2 v = new Vector2(Math.random(), Math.random());
+        v.x *= scaleX;
+        v.y *= scaleY;
+        return v;
+    }
+
+    public Vector2 copy()
+    { return new Vector2(x, y); }
+
+    public Vector2 set(double x, double y)
+    {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+
+    public Vector2 set(Vector2 v)
+    { return set(v.x, v.y); }
+
+    public Vector2 add(Vector2 v)
+    { return add(v.x, v.y); }
+
+    public Vector2 add(double x, double y)
+    {
+        this.x += x;
+        this.y += y;
+        return this;
+    }
+
+    public Vector2 sub(Vector2 v)
+    {
+        x -= v.x;
+        y -= v.y;
+        return this;
+    }
+
+    public Vector2 scale(double scalar)
+    {
+        x *= scalar;
+        y *= scalar;
+        return this;
+    }
+
+    public Vector2 normal()
+    { return set(-y, x); }
+
+    public Vector2 rotate(double angle)
+    {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        return set(x*cos - y*sin, x*sin + y*cos);
+    }
+
+    public Vector2 rotate(double angle, Vector2 center)
+    {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        return set((x - center.x)*cos - (y - center.y)*sin + center.x, (x - center.x)*sin + (y - center.y)*cos + center.y);
+    }
+
+    public boolean isZero()
+    { return Double.compare(x, 0) == 0 && Double.compare(y, 0) == 0; }
+
+    public Vector2 normalize()
+    {
+        if(isZero())
+        { return set(1, 0); }
+        return scale(1/mag());
+    }
+
+    public double distance(Vector2 v)
+    { return Math.sqrt(distance2(v)); }
+
+    public double distance2(Vector2 v)
+    {
+        double dx = v.x - x;
+        double dy = v.y - y;
+        return dx*dx + dy*dy;
+    } 
+
+    public boolean between(Vector2 v1, Vector2 v2)
+    { return Maths.between(x, v1.x, v2.x) && Maths.between(y, v1.y, v2.y); }
+
+
+    public double mag2()
+    { return x*x + y*y; }
+
+    public double mag()
+    { return Math.sqrt(mag2()); }
+
+    public double dot(Vector2 v)
+    { return x * v.x + y * v.y; }
+
+    public double cross(Vector2 v)
+    { return x * v.y - y * v.x; }
+
+    public double angle()
+    {
+        if(isZero())
+        { return 0; }
+        return Math.acos(x / mag()) + (y < 0 ? 0: Math.PI);
+    }
+
+    @Override
+    public String toString()
+    { return "Vector2 [x=" + x + ", y=" + y + "]"; }
+}
