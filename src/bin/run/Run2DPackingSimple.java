@@ -3,6 +3,7 @@ package bin.run;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,9 +15,11 @@ import bin.sketch.packing.Box1D;
 import bin.sketch.packing.EntryPanelSimple;
 import bin.sketch.packing.ShapeBox2D;
 import bin.util.Arrays;
+import bin.util.geometry.Circle;
 import bin.util.geometry.Parallelogram;
 import bin.util.geometry.Shape;
 import bin.util.geometry.Vector2;
+import bin.util.geometry.Triangle;
 import bin.view.Window;
 import bin.view.processing.Canvas;
 import bin.view.processing.Canvas.CanvasHandler;
@@ -111,11 +114,29 @@ public class Run2DPackingSimple
         int n = 100;
         Random random = new Random();
 
-        box = new ShapeBox2D(1, Arrays.fill(new Shape[n], i -> Parallelogram.rectangle(
+        ArrayList<Shape> shapes = Arrays.fill(new ArrayList<Shape>(), n/3, i -> Parallelogram.rectangle(
             Vector2.zero(),
             random.nextDouble(50, 200),
             random.nextDouble(30, 60)
-        )));
+        ));
+
+        Arrays.fill(shapes, n/3, i -> new Circle(
+            Vector2.zero(),
+            random.nextDouble(30, 60)
+        ));
+
+        Arrays.fill(shapes, n/3, i -> Triangle.isocelis(
+            Vector2.zero(),
+            random.nextDouble(50, 200),
+            random.nextDouble(30, 60)
+        ));
+
+        box = new ShapeBox2D(1, shapes.toArray(Shape[]::new));
+        // box = new ShapeBox2D(1, Arrays.fill(new Shape[n], i -> Parallelogram.rectangle(
+        //     Vector2.zero(),
+        //     random.nextDouble(50, 200),
+        //     random.nextDouble(30, 60)
+        // )));
 
         // box = new ShapeBox2D(4,
         //     Parallelogram.rectangle(Vector2.zero(), 25, 25),

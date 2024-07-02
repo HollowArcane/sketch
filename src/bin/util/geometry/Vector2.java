@@ -13,6 +13,9 @@ public class Vector2
         this.y = y;
     }
 
+    public static Vector2 unit(double angle)
+    { return new Vector2(Math.cos(angle), Math.sin(angle)); }
+
     public static Vector2 polar(double angle, double radius)
     { return new Vector2(radius * Math.cos(angle), radius * Math.sin(angle)); }
 
@@ -31,6 +34,38 @@ public class Vector2
         v.x *= scaleX;
         v.y *= scaleY;
         return v;
+    }
+
+    public static Vector2 add(Vector2 v1, Vector2 v2)
+    { return new Vector2(v1.x + v2.x, v1.y + v2.y); }
+
+    public static Vector2 sub(Vector2 v1, Vector2 v2)
+    { return new Vector2(v2.x - v1.x, v2.y - v1.y); }
+
+    public static Vector2 scale(Vector2 v1, float scalar)
+    { return new Vector2(v1.x * scalar, v1.y * scalar); }
+
+    public static Vector2 normal(Vector2 v)
+    { return new Vector2(v.y, -v.x); }
+
+    public static Vector2 normalize(Vector2 v)
+    {
+        double mag = v.mag();
+        return new Vector2(v.x/mag, v.y/mag);
+    }
+
+    public static Vector2 rotate(Vector2 v, double angle)
+    {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        return new Vector2(v.x*cos - v.y*sin, v.x*sin + v.y*cos);
+    }
+
+    public static Vector2 rotate(Vector2 v, double angle, Vector2 center)
+    {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        return new Vector2((v.x - center.x)*cos - (v.y - center.y)*sin, (v.x - center.x)*sin + (v.y - center.y)*cos);
     }
 
     public Vector2 copy()

@@ -22,6 +22,12 @@ public class Fraction implements Comparable<Fraction>
         this.denominator = denominator;
     }
 
+    public static Fraction zero()
+    { return new Fraction(0); }
+
+    public static Fraction one()
+    { return new Fraction(1); }
+
     public int numerator()
     { return numerator; }
 

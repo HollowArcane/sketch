@@ -24,12 +24,11 @@ public class BFS<T>
 
         this.firstItem = firstItem;
         this.lastItem = lastItem;
-
-        queue.add(firstItem);
     }
 
     public ArrayList<T> search(Function<T, T[]> spreadFunction)
     {
+        init();
         while(queue.size() > 0)
         {
             T crtItem = queue.remove(0);
@@ -41,6 +40,15 @@ public class BFS<T>
 
         return null;
     }
+
+    private void init()
+    {
+        source = new HashMap<>();
+        queue = new Vector<>();
+        seen = new HashSet<>();
+        
+        queue.add(firstItem);
+    } 
 
     private ArrayList<T> exploreAll(T source, T[] items)
     {

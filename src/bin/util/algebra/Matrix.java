@@ -278,8 +278,8 @@ public class Matrix implements Cloneable
         throws IllegalArgumentException
     {
         return new Matrix(
-            bin.util.Arrays.map(matrix.split("\n"), (_, row) ->
-                bin.util.Arrays.map(row.trim().split("( ){2,}"), (_, col) -> Fraction.parse(col))
+            bin.util.Arrays.map(matrix.split("[\n]"), (_, row) ->
+                bin.util.Arrays.map(row.trim().replaceAll("\t", " ").split("( ){1,}"), (_, col) -> Fraction.parse(col))
             )
         );
     }

@@ -131,8 +131,8 @@ public class Packing2D
         levels = new ArrayList<>();
         // sort array by decreasing height
         Arrays.sort(items, (s1, s2) -> Double.compare(
-            ((Parallelogram)s2.getShape()).getHeight(),
-            ((Parallelogram)s1.getShape()).getHeight())
+            s2.getShape().boundingBox().height(),
+            s1.getShape().boundingBox().height())
         );
     }
 
