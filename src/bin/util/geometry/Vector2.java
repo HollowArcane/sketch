@@ -1,5 +1,7 @@
 package bin.util.geometry;
 
+import java.awt.Point;
+
 import bin.util.Maths;
 
 public class Vector2
@@ -12,6 +14,18 @@ public class Vector2
         this.x = x;
         this.y = y;
     }
+
+    public Vector2(Point p)
+    {
+        this.x = p.x;
+        this.y = p.y;
+    }
+    
+    public static Vector2 ihat()
+    { return new Vector2(1, 0); }
+
+    public static Vector2 jhat()
+    { return new Vector2(0, 1); }
 
     public static Vector2 unit(double angle)
     { return new Vector2(Math.cos(angle), Math.sin(angle)); }
@@ -36,11 +50,14 @@ public class Vector2
         return v;
     }
 
+    public static Vector2 lerp(double progression, Vector2 v1, Vector2 v2)
+    { return new Vector2(Maths.lerp(progression, v1.x, v2.x), Maths.lerp(progression, v1.y, v2.y)); }
+
     public static Vector2 add(Vector2 v1, Vector2 v2)
     { return new Vector2(v1.x + v2.x, v1.y + v2.y); }
 
     public static Vector2 sub(Vector2 v1, Vector2 v2)
-    { return new Vector2(v2.x - v1.x, v2.y - v1.y); }
+    { return new Vector2(v1.x - v2.x, v1.y - v2.y); }
 
     public static Vector2 scale(Vector2 v1, float scalar)
     { return new Vector2(v1.x * scalar, v1.y * scalar); }
@@ -65,7 +82,7 @@ public class Vector2
     {
         double cos = Math.cos(angle);
         double sin = Math.sin(angle);
-        return new Vector2((v.x - center.x)*cos - (v.y - center.y)*sin, (v.x - center.x)*sin + (v.y - center.y)*cos);
+        return new Vector2((v.x - center.x)*cos - (v.y - center.y)*sin + center.x, (v.x - center.x)*sin + (v.y - center.y)*cos + center.y);
     }
 
     public Vector2 copy()
@@ -88,6 +105,15 @@ public class Vector2
     {
         this.x += x;
         this.y += y;
+        return this;
+    }
+
+    public Vector2 lerp(double progression, Vector2 target)
+    {
+        set(
+            Maths.lerp(progression, x, target.x),
+            Maths.lerp(progression, y, target.y)
+        );
         return this;
     }
 
@@ -145,6 +171,9 @@ public class Vector2
     public boolean between(Vector2 v1, Vector2 v2)
     { return Maths.between(x, v1.x, v2.x) && Maths.between(y, v1.y, v2.y); }
 
+    public Point toPoint()
+    { return new Point((int)Math.round(x), (int)Math.round(y)); }
+
 
     public double mag2()
     { return x*x + y*y; }
@@ -162,7 +191,7 @@ public class Vector2
     {
         if(isZero())
         { return 0; }
-        return Math.acos(x / mag()) + (y < 0 ? 0: Math.PI);
+        return  (y > 0 ? Math.acos(x / mag()): 2*Math.PI - Math.acos(x / mag()));
     }
 
     @Override

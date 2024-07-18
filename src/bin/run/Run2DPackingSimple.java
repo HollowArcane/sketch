@@ -66,14 +66,20 @@ public class Run2DPackingSimple
 
     private static void init()
     {
-        width = 1280;
-        height = 720;
+        width = 300;
+        height = 300;
         
         canvas = new Canvas((int)width, (int)height);
         canvas.setBackground(Color.BLACK);
         canvas.draw(draw);
 
+        box = new ShapeBox2D(1);
+        // testQuestions();
+        // testRandom();
+    }
 
+    private static void testQuestions()
+    {
         // Exercice 2 : =================================================
         /* size = 150
          * 2.3.2,1: (100, 125, 25, 50)
@@ -110,40 +116,18 @@ public class Run2DPackingSimple
          * (750, 299)
          * (1000, 298)
          */
-        
+    }
+
+    private static void testRandom()
+    {
         int n = 100;
         Random random = new Random();
 
-        ArrayList<Shape> shapes = Arrays.fill(new ArrayList<Shape>(), n/3, i -> Parallelogram.rectangle(
+        box = new ShapeBox2D(1, Arrays.fill(new Shape[n], i -> Parallelogram.rectangle(
             Vector2.zero(),
             random.nextDouble(50, 200),
             random.nextDouble(30, 60)
-        ));
-
-        Arrays.fill(shapes, n/3, i -> new Circle(
-            Vector2.zero(),
-            random.nextDouble(30, 60)
-        ));
-
-        Arrays.fill(shapes, n/3, i -> Triangle.isocelis(
-            Vector2.zero(),
-            random.nextDouble(50, 200),
-            random.nextDouble(30, 60)
-        ));
-
-        box = new ShapeBox2D(1, shapes.toArray(Shape[]::new));
-        // box = new ShapeBox2D(1, Arrays.fill(new Shape[n], i -> Parallelogram.rectangle(
-        //     Vector2.zero(),
-        //     random.nextDouble(50, 200),
-        //     random.nextDouble(30, 60)
-        // )));
-
-        // box = new ShapeBox2D(4,
-        //     Parallelogram.rectangle(Vector2.zero(), 25, 25),
-        //     Parallelogram.rectangle(Vector2.zero(), 24, 24),
-        //     // Parallelogram.rectangle(Vector2.zero(), 19, 23),
-        //     Parallelogram.rectangle(Vector2.zero(), 29, 22)
-        // );
+        )));
 
         ExecutorService exec = Executors.newFixedThreadPool(1);
         exec.execute(() -> box.fitBFDH(width, height, 100));

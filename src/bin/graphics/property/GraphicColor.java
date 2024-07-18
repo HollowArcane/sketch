@@ -10,6 +10,9 @@ public class GraphicColor extends Property
     public GraphicColor(Color color)
     { this.color = color; }
 
+    public GraphicColor(float r, float g, float b, float a)
+    { this.color = new Color(r, g, b, a); }
+
     public Color color()
     { return color; }
 
@@ -25,4 +28,11 @@ public class GraphicColor extends Property
     @Override
     public String toString()
     { return "GraphicColor [color=" + color + "]"; }
+
+    @Override
+    protected void setCurrentValues(Property p)
+    {
+        if(p instanceof GraphicColor gc)
+        { color = gc.color; }
+    }
 }

@@ -4,11 +4,10 @@ import java.util.function.Function;
 
 public class Animation<E extends Animatable<E>>
 {
-    private long lastNano;
+    private long lastMillis;
     private long duration;
     private float progression;
-
-    private long lastMillis;
+    private float delay;
 
     private E start, end;
     private Function<Float, Float> behaviour;
@@ -21,11 +20,11 @@ public class Animation<E extends Animatable<E>>
 
     public Animation(E start, E end, int millis, Function<Float, Float> behaviour)
     {
-        lastNano = System.nanoTime();
-        progression = 0;
-        duration = millis * 1000000;
-
         lastMillis = System.currentTimeMillis();
+        progression = 0;
+        delay = 0;
+        duration = millis;
+
         this.behaviour = behaviour;
 
         this.start = start;
@@ -38,15 +37,24 @@ public class Animation<E extends Animatable<E>>
     public static <E extends Animatable<E>> AnimationBuilder<E> from(E start)
     { return new AnimationBuilder<E>(start); }
 
+    public void delay(float seconds)
+    { delay(seconds * 1000); }
+
+    public void delay(int millis)
+    { delay = (float)millis/duration; }
+
     public boolean ended()
     { return progression >= 1; }
 
     public E next()
     {
-        long currentNano = System.nanoTime();
+        long currentMillis = System.currentTimeMillis();
 
-        progression = Math.clamp(progression + (float)(currentNano - lastNano)/duration, 0, 1);
-        lastNano = currentNano;
+        float deltatime = (float)(currentMillis - lastMillis)/duration;
+
+        delay = Math.max(delay - deltatime, 0);
+        progression = Math.clamp(progression + deltatime - delay, 0, 1);
+        lastMillis = currentMillis;
         
         return start.interpolate(end, behaviour.apply(progression));
     }

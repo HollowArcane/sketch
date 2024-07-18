@@ -34,6 +34,8 @@ public class Mouse extends MouseAdapter
 
     private boolean pressed;
 
+    private Object record;
+
     public Mouse()
     { pressed = false; }
 
@@ -65,6 +67,15 @@ public class Mouse extends MouseAdapter
 
     public float speed()
     { return (float)Math.sqrt(Math.pow(dx(), 2) + Math.pow(dy(), 2)); }
+
+    public void record(Object o)
+    { this.record = o; }
+
+    public Object record()
+    { return record; }
+
+    public void unrecord()
+    { this.record = null; }
 
     public int previousX()
     { return px; }

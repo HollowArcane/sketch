@@ -47,11 +47,26 @@ public class Fraction implements Comparable<Fraction>
         int lcm = Euclidian.lcm(o.denominator, denominator);
         
         // multiply each fraction by ppcm/denominator
-        Fraction f1 = copy().multiply(new Fraction(lcm/denominator, lcm/denominator));
-        Fraction f2 = o.copy().multiply(new Fraction(lcm/o.denominator, lcm/o.denominator));
+        Fraction f1 = clone().multiply(new Fraction(lcm/denominator, lcm/denominator));
+        Fraction f2 = o.clone().multiply(new Fraction(lcm/o.denominator, lcm/o.denominator));
 
         return f1.compareTo(f2);
     }
+
+    public static Fraction add(Fraction f1, Fraction f2)
+    { return f1.clone().add(f2); }
+
+    public static Fraction substract(Fraction f1, Fraction f2)
+    { return f1.clone().substract(f2); }
+
+    public static Fraction simplify(Fraction f)
+    { return f.clone().simplify(); }
+
+    public static Fraction multiply(Fraction f1, Fraction f2)
+    { return f1.clone().multiply(f2); }
+
+    public static Fraction multiply(Fraction f, int n)
+    { return f.clone().multiply(n); }
 
     public Fraction add(Fraction f)
     {
@@ -60,7 +75,7 @@ public class Fraction implements Comparable<Fraction>
         
         // multiply each fraction by ppcm/denominator
         multiply(new Fraction(lcm/denominator, lcm/denominator));
-        Fraction copy = f.copy().multiply(new Fraction(lcm/f.denominator, lcm/f.denominator));
+        Fraction copy = Fraction.multiply(f, new Fraction(lcm/f.denominator, lcm/f.denominator));
 
         // add numerators
         numerator += copy.numerator;
@@ -71,7 +86,7 @@ public class Fraction implements Comparable<Fraction>
     { return add(new Fraction(-f.numerator, f.denominator));  }
 
 
-    public Fraction copy()
+    public Fraction clone()
     { return new Fraction(numerator, denominator); }
 
     public Fraction inverse()

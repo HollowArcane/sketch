@@ -189,7 +189,7 @@ public class Arrays
 
     public static <E> int ifirst(E[] array, BiPredicate<Integer, E> function)
     {
-        for (int i = 1; i < array.length; i++)
+        for (int i = 0; i < array.length; i++)
         {
             if(function.test(i, array[i]))
             { return i; }

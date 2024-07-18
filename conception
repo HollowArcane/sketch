@@ -1,0 +1,3 @@
+Serpent:
+    - Wire [... Joins: (position, size)]:
+        moveJoint(j, newPosition) -> propagateConstraints(left) + propagateConstraints(right)

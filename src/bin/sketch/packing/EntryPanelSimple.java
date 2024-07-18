@@ -7,6 +7,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,6 +27,15 @@ public class EntryPanelSimple extends JPanel
 {
     public EntryPanelSimple(double width, double height, JFrame frame, Canvas canvas, ShapeBox2D box)
     {
+        ExecutorService exec = Executors.newFixedThreadPool(1);
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent e)
+            {
+                exec.shutdownNow(); 
+                System.out.println("WINDOW CLOSED");
+            }
+        });
+
         setPreferredSize(new Dimension((int)width, (int)height));
         setLayout(new GridBagLayout());
 
@@ -49,7 +61,8 @@ public class EntryPanelSimple extends JPanel
 
         JButton btnDisplay = new JButton("Afficher");
         btnDisplay.addActionListener(e -> {
-            new Thread(() ->  box.fitBFDH(width, height, 100)).start();
+            exec.execute(() -> box.fitBFDH(canvas.width(), canvas.height(), 100));
+            exec.shutdown();
             frame.setContentPane(canvas);
             frame.revalidate();
             frame.pack();

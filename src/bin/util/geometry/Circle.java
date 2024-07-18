@@ -73,7 +73,16 @@ public final class Circle extends Shape
     { return center.copy().sub(c.center).mag2() < Math.pow(radius + c.radius, 2); }
 
     private boolean intersects(Polygon p)
-    { return Arrays.some(p.getPoints(), (i, point) -> contains(point)); }
+    {
+        Vector2[] points = p.getPoints();
+        for(int i0 = 0; i0 < points.length; i0++)
+        {
+            int i1 = (i0 + 1)%points.length;
+            if(Line.through(points[i0], points[i1]).distance(center) < radius)
+            { return true; }
+        }
+        return Arrays.some(p.getPoints(), (i, point) -> contains(point));
+    }
 
     @Override
     public boolean contains(Vector2 point)

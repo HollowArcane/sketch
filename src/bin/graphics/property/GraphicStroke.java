@@ -37,14 +37,39 @@ public class GraphicStroke extends Property
         if(end instanceof GraphicStroke gs)
         { return new GraphicStroke(
             (float)Maths.lerp(progression, this.width, gs.width),
-            dash,
+            interpolateDash(progression, dash, gs.dash),
             (float)Maths.lerp(progression, this.dashPhase, gs.dashPhase)
         ); }
         
         throw new IllegalArgumentException("Expecting GraphicsStoke: " + end);
     }
 
+    private float[] interpolateDash(float progression, float[] d1, float[] d2)
+    {
+        float[] d = new float[Math.max(d1.length, d2.length)];
+
+        for (int i = 0; i < d.length; i++)
+        {
+            d[i] = (float)Maths.lerp(progression,
+                d1.length > i ? d1[i]: 0,
+                d2.length > i ? d2[i]: 0
+            );
+        }
+        return d;
+    }
+
     @Override
     public String toString()
     { return "GraphicStroke [width=" + width + ", dashPhase=" + dashPhase + ", dash=" + Arrays.toString(dash) + "]"; }
+
+    @Override
+    protected void setCurrentValues(Property p)
+    {
+        if(p instanceof GraphicStroke gs)
+        {
+            width = gs.width;
+            dashPhase = gs.dashPhase;
+            dash = gs.dash;
+        }
+    }
 }

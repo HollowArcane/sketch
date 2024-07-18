@@ -11,6 +11,7 @@ public class AnimationBuilder<E extends Animatable<E>>
     Consumer<Animation<E>> onCreate;
     Function<Float, Float> behaviour;
     int durationMillis;
+    int delayMillis;
 
     public AnimationBuilder(E start)
     {
@@ -51,14 +52,16 @@ public class AnimationBuilder<E extends Animatable<E>>
         return this;
     } 
 
-    public AnimationBuilder<E> after(int durationMillis)
+    public AnimationBuilder<E> after(int delayMillis)
     {
+        this.delayMillis = delayMillis;
         return this;
     }
 
     public Animation<E> create()
     {
         Animation<E> animation = new Animation<E>(start, end, durationMillis, behaviour);
+        animation.delay(delayMillis);
         onCreate.accept(animation);
         return animation;
     }

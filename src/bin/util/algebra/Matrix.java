@@ -34,7 +34,7 @@ public class Matrix implements Cloneable
         {
             fractions[i] = new Fraction[elements[i].length];
             for(int j = 0; j < fractions[i].length; j++)
-            { fractions[i][j] = elements[i][j].copy(); }
+            { fractions[i][j] = elements[i][j].clone(); }
         }
 
         return new Matrix(fractions);
@@ -110,7 +110,7 @@ public class Matrix implements Cloneable
     public Matrix L(int i, int j, Fraction lambda)
     {
         for(int n = 0; n < elements[i].length; n++)
-        { elements[i][n].add(elements[j][n].copy().multiply(lambda)); }
+        { elements[i][n].add(elements[j][n].clone().multiply(lambda)); }
         return this;
     }
 
@@ -137,7 +137,7 @@ public class Matrix implements Cloneable
         for(int n = 0; n < elements.length; n++)
         {
             if(n != i)
-            { L(n, i, elements[n][j].copy().multiply(-1)); }
+            { L(n, i, elements[n][j].clone().multiply(-1)); }
         }
         return this;
     }
@@ -161,7 +161,7 @@ public class Matrix implements Cloneable
             }
 
             for(int n = i + 1; n < elements.length; n++)
-            { L(n, i, elements[n][j].copy().multiply(-1)); }
+            { L(n, i, elements[n][j].clone().multiply(-1)); }
         }
         return this;
     }
@@ -181,7 +181,7 @@ public class Matrix implements Cloneable
         if(i < 0 || j < 0 || i > elements.length || j > elements[i].length)
         { return null; }
 
-        return elements[i][j].copy();
+        return elements[i][j].clone();
     }
 
     public Matrix deleteRow(int i)

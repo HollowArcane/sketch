@@ -6,34 +6,28 @@ import java.awt.Point;
 
 import bin.graphics.property.GraphicColor;
 import bin.graphics.property.GraphicStroke;
-import bin.graphics.property.GraphicTrace;
+import bin.graphics.property.GraphicFloat;
 import bin.graphics.property.Property;
 import bin.util.Maths;
+import bin.util.geometry.Vector2;
 
-public class GLine
+public class GLine extends GPath
 {
     public static final int PROPERTY_STROKE = 0;
     public static final int PROPERTY_COLOR = 1;
     public static final int PROPERTY_TRACE = 2;
 
-    private GraphicStroke stroke;
-    private GraphicColor color;
-    private GraphicTrace trace;
-
-    private Point p2;
-    private Point p1;
+    public Point p2;
+    public Point p1;
 
     public GLine(Point p1, Point p2)
-    { this(p1, p2, Color.BLACK, 1); }
+    { this(p1, p2, Color.BLACK, 3, new float[] { 1f }); }
 
-    public GLine(Point p1, Point p2, Color color, float width)
+    public GLine(Point p1, Point p2, Color color, float width, float[] dash)
     {
+        super(color, width, dash);
         this.p1 = p1;
         this.p2 = p2;
-
-        this.color = new GraphicColor(color);
-        this.stroke = new GraphicStroke(width);
-        this.trace = new GraphicTrace(1f);
     }
 
     public Property getProperty(int index)
@@ -49,14 +43,23 @@ public class GLine
 
     public void paint(Graphics2D g)
     {
-        g.setStroke(stroke.get(GraphicStroke.class).stroke());
-        g.setColor(color.get(GraphicColor.class).color());
+        Graphics2D g2 = (Graphics2D)g.create();
+        g2.setStroke(stroke.get(GraphicStroke.class).stroke());
+        g2.setColor(color.get(GraphicColor.class).color());
 
-        float progression = trace.get(GraphicTrace.class).get();
+        float progression = trace.get(GraphicFloat.class).get();
         
         int x = (int)Maths.lerp(progression, p1.x, p2.x);
         int y = (int)Maths.lerp(progression, p1.y, p2.y);
 
-        g.drawLine(p1.x, p1.y, x, y);
+        g2.drawLine(p1.x, p1.y, x, y);
     }
+
+    @Override
+    public Vector2 p(float t)
+    { return new Vector2(p1).lerp(t, new Vector2(p1).lerp(trace.get(GraphicFloat.class).get(), new Vector2(p2))); }
+
+    @Override
+    public Vector2 v(float t)
+    { return new Vector2(p2).sub(new Vector2(p1)).normalize(); }
 }

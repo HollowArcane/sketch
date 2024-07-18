@@ -11,8 +11,9 @@ public class PaintUtilities
     {
         return new Color(
             (float)Maths.lerp(progression, c1.getRed(), c2.getRed())/255,
-            (float)Maths.lerp(progression, c1.getRed(), c2.getRed())/255, 
-            (float)Maths.lerp(progression, c1.getRed(), c2.getRed())/255
+            (float)Maths.lerp(progression, c1.getGreen(), c2.getGreen())/255, 
+            (float)Maths.lerp(progression, c1.getBlue(), c2.getBlue())/255,
+            (float)Maths.lerp(progression, c1.getAlpha(), c2.getAlpha())/255
         );
     }
 

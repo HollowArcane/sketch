@@ -30,6 +30,7 @@ public class Fulkerson
 
     private void underflow(ArrayList<Integer> result, int sleep)
     {
+        System.out.println(STR."PATH: \{ result }");
         Fraction minflow = minflow(result);
         for(int i = 0; i < result.size() - 1; i++)
         {
@@ -43,6 +44,7 @@ public class Fulkerson
             { Thread.sleep(sleep); }
             catch (InterruptedException e) { }
         }
+        System.out.println(graph);
     }
 
     private Fraction minflow(ArrayList<Integer> result)

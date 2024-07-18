@@ -78,12 +78,7 @@ public class Canvas extends JPanel
 
         if(draw != null)
         { draw.handle(g); }
-
-        try
-        { Thread.sleep(10); }
-        catch (InterruptedException e)
-        { e.printStackTrace(); }
-
+        
         repaint();
     }
 }

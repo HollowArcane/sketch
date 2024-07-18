@@ -115,11 +115,13 @@ public class Packing2D
         public double nextY()
         { return y + height; }
 
-        public void move(ShapeItem2D item, double b, double h)
+        public void move(ShapeItem2D item, double x, double y, double b, double h)
         {
+            Vector2 center = item.getShape().center();
+            
             item.getShape().translate(new Vector2(
-                currentX() + b/2,
-                currentY() + h/2
+                currentX() - x,
+                currentY() - y
             ));
             trim(b);
         }
@@ -150,7 +152,7 @@ public class Packing2D
                 // check if found any fit
                 if(fit != null)
                 // if so place it and go to the next
-                { fit.move(items[i], b, h); }
+                { fit.move(items[i], x, y, b, h); }
                 else
                 {
                     // if not, add level
@@ -159,7 +161,7 @@ public class Packing2D
                     if(level.canFit(0) && level.nextY() <= height)
                     {
                         levels.add(level);
-                        level.move(items[i], b, h);
+                        level.move(items[i], x, y, b, h);
                     }
                     else
                     // go to next shape if a new level cannot fit
