@@ -72,16 +72,28 @@ public final class Circle extends Shape
     private boolean intersects(Circle c)
     { return center.copy().sub(c.center).mag2() < Math.pow(radius + c.radius, 2); }
 
+    private boolean intersectsSegment(Vector2 p1, Vector2 p2)
+    {
+        if(contains(p1) || contains(p2))
+        { return true; }
+
+        Vector2 projection = Line.project(Line.through(p1, p2), center);
+        if(!projection.between(p1, p2))
+        { return false; }
+
+        return projection.distance2(center) < radius * radius;
+    }
+
     private boolean intersects(Polygon p)
     {
         Vector2[] points = p.getPoints();
         for(int i0 = 0; i0 < points.length; i0++)
         {
             int i1 = (i0 + 1)%points.length;
-            if(Line.through(points[i0], points[i1]).distance(center) < radius)
+            if(intersectsSegment(points[i0], points[i1]))
             { return true; }
         }
-        return Arrays.some(p.getPoints(), (i, point) -> contains(point));
+        return p.contains(center);
     }
 
     @Override

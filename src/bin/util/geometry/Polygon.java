@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bin.util.Arrays;
+import bin.util.Maths;
 
 public sealed class Polygon extends Shape permits Quadrilateral, Triangle
 {
@@ -107,10 +108,10 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
         {
             Vector2 p1 = points.get(i);
             Vector2 p2 = points.get((i + 1) % points.size());
-            if(p1.y >= p.y && p2.y >= p.y)
+            Vector2 inter = Line.through(p1, p2).intersect(vecticalUp);
+            if(inter != null && inter.y >= p.y)
             {
-                Vector2 inter = Line.through(p1, p2).intersect(vecticalUp);
-                if(inter != null && inter.between(p1, p2))
+                if(Maths.between(p.x, p1.x, p2.x))
                 { count++; }
             }
         }

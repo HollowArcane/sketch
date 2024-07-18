@@ -38,6 +38,7 @@ public class Run2DPackingComplex
         entryPanel = new EntryPanelComplex(frame, canvas, box);
 
         canvas.mouse().click(e -> {
+            box.clear();
             frame.setContentPane(entryPanel);
             frame.revalidate();
         });

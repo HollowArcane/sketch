@@ -58,6 +58,7 @@ public class Run2DPackingSimple
         entryPanel = new EntryPanelSimple(width, height, frame, canvas, box);
 
         canvas.mouse().click(e -> {
+            box.clear();
             frame.setContentPane(entryPanel);
             frame.revalidate();
             frame.pack();

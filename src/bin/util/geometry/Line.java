@@ -22,13 +22,6 @@ public class Line
 
     public double originY()
     { return origin.y; }
-
-    public Line translate(Vector2 v)
-    {
-        origin.add(v);
-        return this;
-    }
-
     public Vector2 intersect(Line l)
     {
         double a1 =   direction.y, b1 = -  direction.x, c1 = -a1*  origin.x - b1*  origin.y;
@@ -49,8 +42,20 @@ public class Line
     public double distance(Vector2 p)
     { return Vector2.sub(p, origin).cross(direction); }
 
+    public Line translate(Vector2 v)
+    {
+        origin.add(v);
+        return this;
+    }
+
     public Vector2 project(Vector2 p)
-    { return intersect(new Line(p, direction.copy().normal())); }
+    { return p.set(intersect(new Line(p, direction.copy().normal()))); }
+    
+    public static Line translate(Line l, Vector2 v)
+    { return new Line(l.origin.copy(), l.direction.copy()).translate(v); }
+
+    public static Vector2 project(Line l, Vector2 p)
+    { return l.intersect(new Line(p, Vector2.normal(l.direction))); }
 
     @Override
     public String toString()

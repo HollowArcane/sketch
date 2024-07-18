@@ -18,6 +18,9 @@ public class ShapeBox2D
         this.shapes = Arrays.fill(new ArrayList<ShapeItem2D>(shapes.length), shapes.length, i -> new ShapeItem2D(shapes[i], i + ""));
     }
 
+    public void clear()
+    { shapes.clear(); }
+
     public void addShape(Shape s)
     { shapes.add(new ShapeItem2D(s, shapes.size() + "")); }
 
