@@ -16,7 +16,7 @@ import java.awt.RenderingHints;
 public class Canvas extends JPanel
 {
     public static interface CanvasHandler
-    { public void handle(Graphics g); }
+    { public void handle(Graphics2D g); }
 
     private Mouse mouse;
     private Keyboard keyboard;
@@ -77,7 +77,7 @@ public class Canvas extends JPanel
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if(draw != null)
-        { draw.handle(g); }
+        { draw.handle(g2); }
         
         repaint();
     }

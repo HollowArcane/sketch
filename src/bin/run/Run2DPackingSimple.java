@@ -10,10 +10,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import bin.sketch.packing.Box1D;
 import bin.sketch.packing.EntryPanelSimple;
 import bin.sketch.packing.ShapeBox2D;
+import bin.sketch.packing.ShapeItem2D;
 import bin.util.Arrays;
 import bin.util.geometry.Circle;
 import bin.util.geometry.Parallelogram;
@@ -41,9 +43,11 @@ public class Run2DPackingSimple
     private static JPanel entryPanel;
 
     // draw function;
-    private static CanvasHandler draw = g -> box.draw(g);
+    private static CanvasHandler draw = g -> box.draw(g);;
 
     private static WindowListener window;
+
+    private static int index;
 
     public static void main(String[] args)
     {   
@@ -57,24 +61,63 @@ public class Run2DPackingSimple
         frame.addWindowListener(window);
         entryPanel = new EntryPanelSimple(width, height, frame, canvas, box);
 
-        canvas.mouse().click(e -> {
-            box.clear();
-            frame.setContentPane(entryPanel);
-            frame.revalidate();
-            frame.pack();
-        });
+        // canvas.mouse().click(e -> {
+        //     box.clear();
+        //     frame.setContentPane(entryPanel);
+        //     frame.revalidate();
+        //     frame.pack();
+        // });
     }
 
     private static void init()
     {
-        width = 300;
-        height = 300;
+        width = 400;
+        height = 100;
         
         canvas = new Canvas((int)width, (int)height);
         canvas.setBackground(Color.BLACK);
         canvas.draw(draw);
 
-        box = new ShapeBox2D(1);
+        // box = new ShapeBox2D(1,
+        //     new Circle(Vector2.zero(), 100),
+        //     new Circle(Vector2.zero(), 100),
+        //     Parallelogram.rectangle(Vector2.zero(), 25, 25)
+        // );
+        box = new ShapeBox2D(1,
+            Triangle.isocelis(Vector2.zero(), 200, 100),
+            Triangle.isocelis(Vector2.zero(), 200, 100)
+        );
+        // box.fitFFDH(width, height, 0);
+
+        canvas.mouse().record(box.get(index));
+        canvas.mouse().move(mouse -> {
+            if(mouse.record() instanceof ShapeItem2D item)
+            { item.getShape().translate(mouse.dx(), mouse.dy()); }
+        });
+        canvas.mouse().click(mouse -> {
+            if(SwingUtilities.isLeftMouseButton(mouse.details()))
+            {
+                if(index < box.getShapeCount() - 1)
+                {
+                    ShapeItem2D next = box.get(++index);
+                    next.getShape().translate(mouse.x(), mouse.y());
+                    next.setFit(true);
+                    mouse.record(next);
+                }
+            }
+            else
+            {
+                if(mouse.record() instanceof ShapeItem2D item)
+                { item.getShape().rotate(Math.PI/2); }
+            }
+        });
+
+        index = -1;
+        ShapeItem2D next = box.get(++index);
+        next.getShape().translate(canvas.mouse().x(), canvas.mouse().y());
+        next.setFit(true);
+        canvas.mouse().record(next);
+
         // testQuestions();
         // testRandom();
     }

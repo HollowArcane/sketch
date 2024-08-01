@@ -72,7 +72,7 @@ public final class Circle extends Shape
     private boolean intersects(Circle c)
     { return center.copy().sub(c.center).mag2() < Math.pow(radius + c.radius, 2); }
 
-    private boolean intersectsSegment(Vector2 p1, Vector2 p2)
+    public boolean intersectsSegment(Vector2 p1, Vector2 p2)
     {
         if(contains(p1) || contains(p2))
         { return true; }

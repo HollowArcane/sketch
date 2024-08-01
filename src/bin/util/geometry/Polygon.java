@@ -4,37 +4,46 @@ import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import bin.util.Arrays;
 import bin.util.Maths;
 
 public sealed class Polygon extends Shape permits Quadrilateral, Triangle
 {
-    List<Vector2> points;
+    private List<Vector2> points;
+    private Vector2 center;
 
     public Polygon(int npoints)
     { this.points = new ArrayList<>(npoints); }
 
     public Polygon(Vector2... points)
-    { this.points = bin.util.Arrays.of(points); }
+    {
+        this.points = bin.util.Arrays.of(points);
+        center = computeCenter();
+    }
 
     public Polygon(ArrayList<Vector2> points)
-    { this.points = points; }
+    {
+        this.points = points;
+        center = computeCenter();
+    }
 
     public static Polygon regular(int n, Vector2 center, double radius)
     { return regular(n, center, radius, 0); }
 
     public static Polygon regular(int n, Vector2 center, double radius, double initialAngle)
     {
-        Polygon p = new Polygon(n);
+        ArrayList<Vector2> points = new ArrayList<>();
         
         for(int i = 0; i < n; i++)
-        { p.points.add(Vector2.polar(i * 2f * Math.PI /n + initialAngle, radius).add(center)); }
+        { points.add(Vector2.polar(i * 2f * Math.PI /n + initialAngle, radius).add(center)); }
 
-        return p;
+        return new Polygon(points);
     }
 
-    public Vector2 center()
+    private Vector2 computeCenter()
     { return new Vector2(bin.util.Arrays.avg(points, p -> p.x), bin.util.Arrays.avg(points, p -> p.y)); }
+
+    public Vector2 center()
+    { return center; }
 
     public Path2D.Float tracePath()
     {
@@ -49,6 +58,9 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
         return path;
     }
 
+    public Vector2 point(int index)
+    { return points.get(index); }
+
     public Vector2[] getPoints()
     { return points.toArray(Vector2[]::new); }
 
@@ -56,6 +68,8 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
     {
         for(int i = 0; i < points.length; i++)
         { this.points.add(points[i]); }
+        center = computeCenter();
+
         return this;
     }
 
@@ -83,6 +97,7 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
     {
         for (Vector2 point : points)
         { point.add(v); }
+        center = computeCenter();
         return this;
     }
 
