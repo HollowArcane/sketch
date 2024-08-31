@@ -167,6 +167,16 @@ public class Arrays
         return sum;
     }
     
+    public static <E> E first(E[] array, Predicate<E> function)
+    {
+        for (E e: array)
+        {
+            if(function.test(e))
+            { return e; }
+        }
+        return null;
+    }
+
     public static <E> E first(Iterable<E> array, Predicate<E> function)
     {
         for (E e: array)
@@ -201,6 +211,17 @@ public class Arrays
     {
         Entry<E, T> entry = first(array.entrySet(), e -> function.test(e.getKey(), e.getValue()));
         return entry != null ? entry.getKey() : null;
+    }
+    
+    public static <E> E max(E[] array, Comparator<? super E> comparator)
+    {
+        E max = null;
+        for (E e: array)
+        {
+            if(max == null || comparator.compare(e, max) > 0)
+            { max = e; }
+        }
+        return max;
     }
     
     public static <E> E max(Iterable<E> array, Comparator<? super E> comparator)
@@ -239,6 +260,9 @@ public class Arrays
     public static <E, T> E imax(Map<E, T> array, Comparator<? super T> comparator)
     { return max(array.entrySet(), (e1, e2) -> comparator.compare(e1.getValue(), e2.getValue())).getKey(); }
     
+    public static <E> E min(E[] array, Comparator<? super E> comparator)
+    { return max(array, comparator.reversed()); }
+    
     public static <E> E min(Iterable<E> array, Comparator<? super E> comparator)
     { return max(array, comparator.reversed()); }
 
@@ -270,6 +294,9 @@ public class Arrays
     { return array[(int)(Math.random() * array.length)]; }
 
     public static <E> E random(List<E> array)
+    { return array.get((int)(Math.random() * array.size())); }
+
+    public static <E> E random(Vector<E> array)
     { return array.get((int)(Math.random() * array.size())); }
 
     @SuppressWarnings("unchecked")

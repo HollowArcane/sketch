@@ -5,14 +5,14 @@ import java.util.ArrayList;
 
 import bin.util.Arrays;
 import bin.util.algorithm.Packing2D;
-import bin.util.geometry.Shape;
+import bin.util.geometry.FiniteShape;
 
 public class ShapeBox2D
 {
     private ArrayList<ShapeItem2D> shapes;
     private int scale;
 
-    public ShapeBox2D(int scale, Shape... shapes)
+    public ShapeBox2D(int scale, FiniteShape... shapes)
     {
         this.scale = scale;
         this.shapes = Arrays.fill(new ArrayList<ShapeItem2D>(shapes.length), shapes.length, i -> new ShapeItem2D(shapes[i], i + ""));
@@ -27,7 +27,7 @@ public class ShapeBox2D
     public void clear()
     { shapes.clear(); }
 
-    public void addShape(Shape s)
+    public void addShape(FiniteShape s)
     { shapes.add(new ShapeItem2D(s, shapes.size() + "")); }
 
     public void fitNFDH(double width, double height, int sleep)

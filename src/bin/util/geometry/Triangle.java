@@ -12,6 +12,6 @@ public final class Triangle extends Polygon
     { return new Triangle(center.copy().add(base/2, height/3), center.copy().add(-base/2, height/3), center.copy().add(0, -2*height/3)); }
     
     @Override
-    public Polygon addPoints(Vector2... points)
-    { throw new UnsupportedOperationException("Cannot add new points to a defined triangle"); }
+    public Triangle clone()
+    { return new Triangle(point(0), point(1), point(2)); }
 }

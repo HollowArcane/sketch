@@ -60,7 +60,7 @@ public class PaperMarbling
         double u = Math.pow(.5, 1/c);        
 
         for(Vector2 vertex: ink.vertices)
-        { vertex.add(line.direction.copy().scale(z * Math.pow(u, Math.abs(vertex.copy().sub(line.origin).dot(line.direction.copy().normal()))))); }
+        { vertex.add(line.direction().copy().scale(z * Math.pow(u, Math.abs(vertex.copy().sub(line.origin()).dot(line.direction().copy().normal()))))); }
     }
 
     public void draw(Canvas canvas, Graphics g)

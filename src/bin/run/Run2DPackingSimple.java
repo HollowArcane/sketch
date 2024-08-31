@@ -18,6 +18,7 @@ import bin.sketch.packing.ShapeBox2D;
 import bin.sketch.packing.ShapeItem2D;
 import bin.util.Arrays;
 import bin.util.geometry.Circle;
+import bin.util.geometry.FiniteShape;
 import bin.util.geometry.Parallelogram;
 import bin.util.geometry.Shape;
 import bin.util.geometry.Vector2;
@@ -167,7 +168,7 @@ public class Run2DPackingSimple
         int n = 100;
         Random random = new Random();
 
-        box = new ShapeBox2D(1, Arrays.fill(new Shape[n], i -> Parallelogram.rectangle(
+        box = new ShapeBox2D(1, Arrays.fill(new FiniteShape[n], i -> Parallelogram.rectangle(
             Vector2.zero(),
             random.nextDouble(50, 200),
             random.nextDouble(30, 60)

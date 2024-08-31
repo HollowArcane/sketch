@@ -62,6 +62,9 @@ public class Vector2
     public static Vector2 scale(Vector2 v1, float scalar)
     { return new Vector2(v1.x * scalar, v1.y * scalar); }
 
+    public static Vector2 scale(Vector2 v1, Vector2 scalar)
+    { return new Vector2(v1.x * scalar.x, v1.y * scalar.y); }
+
     public static Vector2 normal(Vector2 v)
     { return new Vector2(v.y, -v.x); }
 
@@ -128,6 +131,13 @@ public class Vector2
     {
         x *= scalar;
         y *= scalar;
+        return this;
+    }
+
+    public Vector2 scale(Vector2 scalar)
+    {
+        x *= scalar.x;
+        y *= scalar.y;
         return this;
     }
 

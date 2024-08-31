@@ -15,15 +15,15 @@ public final class Parallelogram extends Quadrilateral
         height = Math.abs(point(3).copy().sub(point(0)).cross(point(1).copy().sub(point(0)).normalize()));
     }
 
-    @Override
-    public Polygon addPoints(Vector2... points)
-    { throw new UnsupportedOperationException("Cannot add new points to a defined triangle"); }
-
     public static Parallelogram rectangle(Vector2 center, double base, double height)
     { return new Parallelogram(center, new Vector2(base, 0), new Vector2(0, height)); }
 
     public static Parallelogram square(Vector2 center, double side)
     { return rectangle(center, side, side); }
+
+    @Override
+    public Parallelogram clone()
+    { return new Parallelogram(getCenter(), point(1).sub(point(0)),point(2).sub(point(1))); }
 
     public double getArea()
     { return getBase() * getHeight(); }

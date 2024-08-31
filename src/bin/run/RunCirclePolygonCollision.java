@@ -28,7 +28,7 @@ public class RunCirclePolygonCollision
 
         canvas = new Canvas(1280, 720);
         
-        canvas.mouse().move(mouse -> c.center.set(mouse.x(), mouse.y()));
+        canvas.mouse().move(mouse -> c.center().set(mouse.x(), mouse.y()));
         
         canvas.draw(g -> {
             if(c.intersects(p))
@@ -36,10 +36,10 @@ public class RunCirclePolygonCollision
             else
             { g.setColor(Color.getHSBColor(.6f, .7f, 1f)); }
             
-            ((Graphics2D)g).fill(p.tracePath());
+            ((Graphics2D)g).fill(p.path());
 
             g.setColor(Color.BLACK);
-            PaintUtilities.fillCircle(g, (int)c.center.x, (int)c.center.y, (int)c.radius);
+            PaintUtilities.fillCircle(g, (int)c.center().x, (int)c.center().y, (int)c.radius);
         });
 
         canvas.display("Circle Polygon Collision");

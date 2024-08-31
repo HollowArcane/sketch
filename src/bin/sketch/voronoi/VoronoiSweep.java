@@ -79,7 +79,7 @@ public class VoronoiSweep
         {
             // check if sweepLine passes through next seed
             Vector2 seed = cloud.get(cursor);
-            if(seed.x < sweepLine.originX())
+            if(seed.x < sweepLine.origin().x)
             {
                 // create parabola associated to that seed
                 parabolas.put(seed, new Parabola(seed, sweepLine));
@@ -101,7 +101,7 @@ public class VoronoiSweep
         {
             // check if sweepLine passes through next seed
             Vector2 seed = cloud.get(cursor);
-            if(seed.x > sweepLine.originX())
+            if(seed.x > sweepLine.origin().x)
             {
                 // create parabola associated to that seed
                 parabolas.remove(seed);
@@ -118,7 +118,7 @@ public class VoronoiSweep
         { PaintUtilities.drawPoint(g, (int)point.x, (int)point.y); }
 
         g.setColor(new Color(0, 150, 50));
-        g.drawLine((int)sweepLine.originX(), 0, (int)sweepLine.originX(), height);
+        g.drawLine((int)sweepLine.origin().x, 0, (int)sweepLine.origin().x, height);
         
         g.setColor(Color.RED);
         g.draw(traceBeach());
@@ -127,7 +127,7 @@ public class VoronoiSweep
     private Path2D.Float traceBeach()
     {
         Path2D.Float path = new Path2D.Float();
-        path.moveTo(sweepLine.originX(), 0);
+        path.moveTo(sweepLine.origin().x, 0);
 
         for(int t = 0; t < height; t++)
         {

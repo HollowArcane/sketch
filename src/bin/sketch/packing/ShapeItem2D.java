@@ -11,21 +11,21 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
 import bin.util.geometry.Circle;
+import bin.util.geometry.FiniteShape;
 import bin.util.geometry.Polygon;
-import bin.util.geometry.Shape;
 import bin.util.geometry.Vector2;
 import bin.util.paint.PaintUtilities;
 import bin.util.paint.TextStroke;
 
 public class ShapeItem2D
 {
-    private Shape shape;
+    private FiniteShape shape;
     private String name;
     private boolean fit;
 
     private Color color;
 
-    public ShapeItem2D(Shape shape, String name)
+    public ShapeItem2D(FiniteShape shape, String name)
     {
         this.shape = shape;
         this.name = name;
@@ -33,7 +33,7 @@ public class ShapeItem2D
         color = Color.getHSBColor((float)Math.random(), .8f, .9f);
     }
 
-    public Shape getShape()
+    public FiniteShape getShape()
     { return shape; }
 
     public void setFit(boolean fit)
@@ -47,18 +47,18 @@ public class ShapeItem2D
         g.setColor(color);
         g.setFont(new Font("sansserif", Font.BOLD, 24));
 
-        Vector2 center = shape.center();
+        Vector2 center = shape.getCenter();
         Point txtPosition = TextStroke.center(name, g.getFontMetrics(), scale*(int)center.x, scale*(int)center.y);
 
         if(shape instanceof Circle c)
         {
-            PaintUtilities.fillCircle(g, scale*(int)c.centerX(), scale*(int)c.centerY(), scale*(int)c.radius);
+            PaintUtilities.fillCircle(g, scale*(int)c.center().x, scale*(int)c.center().y, scale*(int)c.radius);
             g.setColor(Color.WHITE);
             g.drawString(name, txtPosition.x, txtPosition.y);
         }
         else if(shape instanceof Polygon p)
         {
-            Path2D.Float path = p.tracePath();
+            Path2D.Float path = p.path();
             path.transform(new AffineTransform(new float[] { scale, 0, 0, scale, 0, 0 }));
 
             ((Graphics2D)g).fill(path);

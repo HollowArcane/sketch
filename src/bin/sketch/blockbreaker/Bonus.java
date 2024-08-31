@@ -6,19 +6,27 @@ import java.awt.Graphics2D;
 import bin.util.geometry.Parallelogram;
 import bin.util.geometry.Vector2;
 
-public class Brick
+public class Bonus
 {
+    public static enum Type
+    { X2, SIZE }
+
+    private Vector2 vecolity;
+
     private Parallelogram shape;
     private Color color;
+    private Type type;
 
-    public Brick(int x, int y, int width, int height, Color color)
+    public Bonus(int x, int y, int width, int height, Color color, Type type)
     {
-        setShape(x, y, width, height);
+        vecolity = new Vector2(0, 3);
+        shape = Parallelogram.rectangle(new Vector2(x + width/2, y + height/2), width, height);
         this.color = color;
+        this.type = type;
     }
 
-    public void setShape(int x, int y, int width, int height)
-    { shape = Parallelogram.rectangle(new Vector2(x + width/2, y + height/2), width, height); }
+    public Type getType()
+    { return type; }
 
     public int x()
     { return (int)(shape.getCenter().x - shape.getBase() / 2); }
@@ -35,22 +43,17 @@ public class Brick
     public Parallelogram getShape()
     { return shape; }
 
-    public Bonus spawnBonus()
+    public void update(Platform platform)
     {
-        Bonus.Type t = null;
-        
-        if(Math.random() < .5)
-        { t = Bonus.Type.X2; }
+        shape.translate(vecolity);
 
-        else
-        { t = Bonus.Type.SIZE; }
-
-        return new Bonus(x(), y(), width(), height(), Color.WHITE, t);
+        if(shape.intersects(platform.getShape()))
+        { platform.granted(this); }
     }
 
     public void paint(Graphics2D g)
     {
         g.setColor(color);
-        g.fillRect(x(), y(), width(), height());
+        g.fillOval(x(), y(), width(), height());
     }
 }

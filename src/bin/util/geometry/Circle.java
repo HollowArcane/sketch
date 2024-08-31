@@ -1,15 +1,17 @@
 package bin.util.geometry;
 
-import bin.util.Arrays;
+import java.util.Objects;
 
-public final class Circle extends Shape
+import javax.management.RuntimeErrorException;
+
+public final class Circle extends FiniteShape
 {
     public double radius;
-    public Vector2 center;
+    private Vector2 center;
 
     public Circle(Vector2 center, double radius)
     {
-        this.center = center;
+        this.center = center != null ? center.copy(): Vector2.zero();
         this.radius = radius;
     }
 
@@ -32,23 +34,15 @@ public final class Circle extends Shape
         return new Circle(center, p3.copy().sub(center).mag());
     }
 
-    public Circle translate(Vector2 v)
-    {
-        center.add(v);
-        return this;
-    }
-
     public Vector2 center()
     { return center; }
 
-    public double centerX()
-    { return center.x; }
-
-    public double centerY()
-    { return center.y; }
+    @Override
+    public Vector2 getCenter()
+    { return center.copy(); }
 
     @Override
-    public boolean intersects(Shape s)
+    public boolean intersects(FiniteShape s)
     {
         return switch (s) {
             case Polygon p -> intersects(p);
@@ -58,16 +52,35 @@ public final class Circle extends Shape
     }
 
     @Override
-    public Shape rotate(double angle)
+    public Circle translate(Vector2 v)
+    {
+        center.add(v);
+        return this;
+    }
+
+    @Override
+    public FiniteShape scale(Vector2 v)
+    {
+        if(v.x != v.y)
+        { throw new RuntimeException("Cannot scale a circle with different scalar values"); };
+        return new Circle(v, radius * v.x);
+    }
+
+    @Override
+    public Circle rotate(double angle)
     { return this; }
 
     @Override
-    public double area()
+    public double getArea()
     { return Math.PI * radius * radius; }
 
     @Override
-    public Shape clone()
-    { return new Circle(center.copy(), radius); }
+    public Circle clone()
+    { return new Circle(center, radius); }
+
+    @Override
+    public boolean contains(Vector2 point)
+    { return point.distance2(center) < radius * radius; }
 
     private boolean intersects(Circle c)
     { return center.copy().sub(c.center).mag2() < Math.pow(radius + c.radius, 2); }
@@ -97,14 +110,10 @@ public final class Circle extends Shape
     }
 
     @Override
-    public boolean contains(Vector2 point)
-    { return point.distance2(center) < radius * radius; }
-
-    @Override
     public String toString()
     { return "Circle [radius=" + radius + ", center=" + center + "]"; }
 
     @Override
-    public Rectangle boundingBox()
+    public Rectangle getBoundingBox()
     { return new Rectangle(center.x - radius, center.y - radius, 2*radius, 2*radius); }
 }

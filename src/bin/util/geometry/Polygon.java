@@ -1,28 +1,18 @@
 package bin.util.geometry;
 
 import java.awt.geom.Path2D;
-import java.util.ArrayList;
-import java.util.List;
 
+import bin.util.Arrays;
 import bin.util.Maths;
 
-public sealed class Polygon extends Shape permits Quadrilateral, Triangle
+public sealed class Polygon extends FiniteShape permits Quadrilateral, Triangle
 {
-    private List<Vector2> points;
+    private Vector2[] points;
     private Vector2 center;
-
-    public Polygon(int npoints)
-    { this.points = new ArrayList<>(npoints); }
 
     public Polygon(Vector2... points)
     {
-        this.points = bin.util.Arrays.of(points);
-        center = computeCenter();
-    }
-
-    public Polygon(ArrayList<Vector2> points)
-    {
-        this.points = points;
+        this.points = Arrays.map(points, (i, p) -> p.copy());
         center = computeCenter();
     }
 
@@ -31,57 +21,52 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
 
     public static Polygon regular(int n, Vector2 center, double radius, double initialAngle)
     {
-        ArrayList<Vector2> points = new ArrayList<>();
+        Vector2[] points = new Vector2[n];
         
         for(int i = 0; i < n; i++)
-        { points.add(Vector2.polar(i * 2f * Math.PI /n + initialAngle, radius).add(center)); }
+        { points[i] = Vector2.polar(i * 2f * Math.PI /n + initialAngle, radius).add(center); }
 
-        return new Polygon(points);
+        Polygon p = new Polygon();
+        p.points = points;
+        return p;
     }
 
     private Vector2 computeCenter()
-    { return new Vector2(bin.util.Arrays.avg(points, p -> p.x), bin.util.Arrays.avg(points, p -> p.y)); }
+    { return new Vector2(bin.util.Arrays.avg(points, (i, p) -> p.x), bin.util.Arrays.avg(points, (i, p) -> p.y)); }
 
-    public Vector2 center()
+    @Override
+    public Vector2 getCenter()
     { return center; }
 
-    public Path2D.Float tracePath()
+    public Path2D.Float path()
     {
         Path2D.Float path = new Path2D.Float();
-        if(points.size() == 0)
+        if(points.length == 0)
         { return path; }
 
-        path.moveTo((int)points.get(0).x, (int)points.get(0).y);
-        for(int i = 1; i < points.size(); i++)
-        { path.lineTo((int)points.get(i).x, (int)points.get(i).y); }
+        path.moveTo((int)points[0].x, (int)points[0].y);
+        for(int i = 1; i < points.length; i++)
+        { path.lineTo((int)points[i].x, (int)points[i].y); }
 
         return path;
     }
 
     public Vector2 point(int index)
-    { return points.get(index); }
+    { return points[index]; }
+
+    public Vector2 getPoint(int index)
+    { return points[index].copy(); }
 
     public Vector2[] getPoints()
-    { return points.toArray(Vector2[]::new); }
-
-    public Polygon addPoints(Vector2... points)
-    {
-        for(int i = 0; i < points.length; i++)
-        { this.points.add(points[i]); }
-        center = computeCenter();
-
-        return this;
-    }
+    { return Arrays.map(points, (i, p) -> p.copy()); }
 
     @Override
-    public double area()
-    { return Math.abs(bin.util.Arrays.sum(points, (_, p) -> points.get(0).cross(p), (sum, value) -> sum + value) / 2); }
+    public double getArea()
+    { return Math.abs(bin.util.Arrays.sum(points, (_, p) -> points[0].cross(p), (sum, value) -> sum + value) / 2); }
 
     @Override
-    public Shape rotate(double angle)
+    public Polygon rotate(double angle)
     {
-        Vector2 center = center();
-
         for(Vector2 point : points)
         { point.rotate(angle, center); }
 
@@ -89,11 +74,15 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
     }
 
     @Override
-    public Shape clone()
-    { return new Polygon(bin.util.Arrays.map(points, (_, p) -> p.copy())); }
+    public Polygon clone()
+    {
+        Polygon shape = new Polygon();
+        shape.points = Arrays.map(points, (i, p) -> p.copy());
+        return shape;
+    }
 
     @Override
-    public Shape translate(Vector2 v)
+    public Polygon translate(Vector2 v)
     {
         for (Vector2 point : points)
         { point.add(v); }
@@ -102,7 +91,15 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
     }
 
     @Override
-    public boolean intersects(Shape s)
+    public Polygon scale(Vector2 v)
+    {
+        Polygon shape = new Polygon();
+        shape.points = Arrays.map(points, (i, p) -> Vector2.scale(p, v));
+        return shape;
+    }
+
+    @Override
+    public boolean intersects(FiniteShape s)
     {
         return switch (s) {
             case Polygon p -> intersects(p);
@@ -112,17 +109,17 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
     }
 
     private boolean intersects(Polygon p)
-    { return bin.util.Arrays.some(points, point -> p.contains(point)); }
+    { return bin.util.Arrays.some(points, (i, point) -> p.contains(point)); }
 
     @Override
     public boolean contains(Vector2 p)
     {
         int count = 0;
         Line vecticalUp = new Line(p, new Vector2(0, 1));
-        for(int i = 0; i < points.size(); i++)
+        for(int i = 0; i < points.length; i++)
         {
-            Vector2 p1 = points.get(i);
-            Vector2 p2 = points.get((i + 1) % points.size());
+            Vector2 p1 = points[i];
+            Vector2 p2 = points[(i + 1) % points.length];
             Vector2 inter = Line.through(p1, p2).intersect(vecticalUp);
             if(inter != null && inter.y >= p.y)
             {
@@ -139,7 +136,7 @@ public sealed class Polygon extends Shape permits Quadrilateral, Triangle
     { return "Polygon [points=" + points + "]"; }
 
     @Override
-    public Rectangle boundingBox()
+    public Rectangle getBoundingBox()
     {
         Vector2 top = bin.util.Arrays.max(points, (p1, p2) -> Double.compare(p2.y, p1.y));
         Vector2 left = bin.util.Arrays.max(points, (p1, p2) -> Double.compare(p2.x, p1.x));

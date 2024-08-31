@@ -2,6 +2,8 @@ package bin.run;
 
 import java.awt.Color;
 
+import javax.swing.SwingUtilities;
+
 import bin.sketch.blockbreaker.Level;
 import bin.view.processing.Canvas;
 
@@ -22,6 +24,10 @@ public class RunBlockBreaker
         level = new Level(width, height);
 
         canvas.mouse().move(mouse -> level.getPlatform().setX(mouse.x(), width));
+        canvas.mouse().click(mouse -> {
+            if(SwingUtilities.isLeftMouseButton(mouse.details()))
+            { level = new Level(width, height); }
+        });
 
         canvas.draw(g -> {
             level.paint(g);

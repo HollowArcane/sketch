@@ -6,6 +6,7 @@ import java.util.Arrays;
 import bin.sketch.packing.Item1D;
 import bin.sketch.packing.ShapeItem2D;
 import bin.util.geometry.Circle;
+import bin.util.geometry.FiniteShape;
 import bin.util.geometry.Parallelogram;
 import bin.util.geometry.Shape;
 import bin.util.geometry.Vector2;
@@ -63,9 +64,9 @@ public class Packing2D
         public double angle()
         { return rotation * Math.PI / 2; }
 
-        public void transform(Shape shape)
+        public void transform(FiniteShape shape)
         {
-            Rectangle bound = shape.boundingBox();
+            Rectangle bound = shape.getBoundingBox();
         
             shape.translate(new Vector2(
                 bound.base()/2 + x(),
@@ -73,9 +74,9 @@ public class Packing2D
             )).rotate(angle());
         }
 
-        public void transformReverse(Shape shape)
+        public void transformReverse(FiniteShape shape)
         {
-            Rectangle bound = shape.boundingBox();
+            Rectangle bound = shape.getBoundingBox();
         
             shape.rotate(-angle())
             .translate(new Vector2(
@@ -117,7 +118,7 @@ public class Packing2D
 
         public void move(ShapeItem2D item, double x, double y, double b, double h)
         {
-            Vector2 center = item.getShape().center();
+            Vector2 center = item.getShape().getCenter();
             
             item.getShape().translate(new Vector2(
                 currentX() - x,
@@ -133,8 +134,8 @@ public class Packing2D
         levels = new ArrayList<>();
         // sort array by decreasing height
         Arrays.sort(items, (s1, s2) -> Double.compare(
-            s2.getShape().boundingBox().height(),
-            s1.getShape().boundingBox().height())
+            s2.getShape().getBoundingBox().height(),
+            s1.getShape().getBoundingBox().height())
         );
     }
 
@@ -144,7 +145,7 @@ public class Packing2D
 
         for(int i = 0; i < items.length; i++)
         {
-            if(items[i].getShape().boundingBox() instanceof Rectangle(double x, double y, double b, double h))
+            if(items[i].getShape().getBoundingBox() instanceof Rectangle(double x, double y, double b, double h))
             {
                 // seek level to fit item
                 Level fit = seeker.seek(levels, b, h);
@@ -192,7 +193,7 @@ public class Packing2D
             { continue; }
 
             // get the bounding rectangle of the current item
-            Rectangle bounds = items[i].getShape().boundingBox();
+            Rectangle bounds = items[i].getShape().getBoundingBox();
             // move the shape to the calculated position
             items[i].getShape().translate(new Vector2(best.get(i).x() + bounds.base()/2, best.get(i).y() + bounds.height()/2));
             System.out.println("POSITION: " + best.get(i).x() + ", " + best.get(i).y());
@@ -258,13 +259,13 @@ public class Packing2D
     }
 
     private static double totalArea(ArrayList<Position> positions, ShapeItem2D[] items)
-    { return bin.util.Arrays.sum(positions, (i, p) -> p != null ? items[i].getShape().area(): 0, (sum, value) -> sum + value); }
+    { return bin.util.Arrays.sum(positions, (i, p) -> p != null ? items[i].getShape().getArea(): 0, (sum, value) -> sum + value); }
 
     private static boolean validPosition(Position position, ArrayList<Position> possibility, ShapeItem2D[] items)
         throws CloneNotSupportedException
     {
-        Rectangle b2 = items[possibility.size()].getShape().boundingBox();
-        Shape s2 = ((Shape)items[possibility.size()].getShape().clone())
+        Rectangle b2 = items[possibility.size()].getShape().getBoundingBox();
+        FiniteShape s2 = (FiniteShape)(items[possibility.size()].getShape().clone())
                         .translate(new Vector2(position.x() + b2.base()/2, position.y() + b2.height()/2))
                         .rotate(position.angle());
 
@@ -274,8 +275,8 @@ public class Packing2D
             if(p == null)
             { continue; }
 
-            Rectangle b1 = items[i].getShape().boundingBox();
-            Shape s1 = ((Shape)items[i].getShape().clone())
+            Rectangle b1 = items[i].getShape().getBoundingBox();
+            FiniteShape s1 = (FiniteShape)(items[i].getShape().clone())
                             .translate(new Vector2(p.x() + b1.base()/2, p.y() + b1.height()/2))
                             .rotate(p.angle());
 
@@ -287,7 +288,7 @@ public class Packing2D
 
     private static ArrayList<Position> generatePositions(double width, double height, ShapeItem2D item)
     {
-        Rectangle bound = item.getShape().boundingBox();
+        Rectangle bound = item.getShape().getBoundingBox();
         ArrayList<Position> positions = new ArrayList<>();
         for(int y = 0; y <= height - bound.height(); y++)
         {

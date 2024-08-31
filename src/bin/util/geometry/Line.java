@@ -1,27 +1,34 @@
 package bin.util.geometry;
 
-public class Line
+public final class Line extends InfiniteShape
 {
-    public Vector2 origin;
-    public Vector2 direction;
+    private Vector2 origin;
+    private Vector2 direction;
     
     public Line(Vector2 origin, Vector2 direction)
     {
-        this.origin = origin;
-        this.direction = direction.normalize();
+        this.origin = origin.copy();
+        this.direction = Vector2.normalize(direction);
     }
 
     public static Line through(Vector2 p1, Vector2 p2)
-    { return new Line(p1, p2.copy().sub(p1)); }
+    { return new Line(p1, Vector2.sub(p2, p1)); }
 
     public Vector2 get(float t)
-    { return origin.copy().add(direction.copy().scale(t)); }
+    { return Vector2.add(origin, Vector2.scale(direction, t)); }
 
-    public double originX()
-    { return origin.x; }
+    public Vector2 origin()
+    { return origin; }
 
-    public double originY()
-    { return origin.y; }
+    public Vector2 direction()
+    { return origin; }
+
+    public Vector2 getOrigin()
+    { return origin.copy(); }
+
+    public Vector2 getDirection()
+    { return direction.copy(); }
+
     public Vector2 intersect(Line l)
     {
         double a1 =   direction.y, b1 = -  direction.x, c1 = -a1*  origin.x - b1*  origin.y;
@@ -50,9 +57,6 @@ public class Line
 
     public Vector2 project(Vector2 p)
     { return p.set(intersect(new Line(p, direction.copy().normal()))); }
-    
-    public static Line translate(Line l, Vector2 v)
-    { return new Line(l.origin.copy(), l.direction.copy()).translate(v); }
 
     public static Vector2 project(Line l, Vector2 p)
     { return l.intersect(new Line(p, Vector2.normal(l.direction))); }
@@ -60,4 +64,15 @@ public class Line
     @Override
     public String toString()
     { return "Line [origin=" + origin + ", direction=" + direction + "]"; }
+
+    @Override
+    public Line clone()
+    { return new Line(origin, direction); }
+
+    @Override
+    public Line rotate(double angle)
+    {
+        direction.rotate(angle);
+        return this;
+    }
 }
